@@ -1,8 +1,12 @@
 ---
-- name: "Mock task"
-  ansible.builtin.debug:
-    msg: "hello, world!"
+- name: "Copy installation files"
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "/home/rustdesk-install/"
+    mode: preserve
+  loop: "{{ lookup('fileglob', role_path + '/files/*').split(',') }}"
 
-- name: "test"
-  debug:
-    msg: "test test test"
+- name: "Execute installation script"
+  ansible.builtin.command:
+    chdir: /home/rustdesk-install/
+    cmd: /home/rustdesk-install/install-rustdesk.sh
