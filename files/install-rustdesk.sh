@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # move executables to binary directory
-mv hhbr /usr/bin/hbbr
+mv hbbr /usr/bin/hbbr
 mv hbbs /usr/bin/hbbs
 
 # move services to systemd services directory
