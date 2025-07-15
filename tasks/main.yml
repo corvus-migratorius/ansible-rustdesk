@@ -2,3 +2,7 @@
 - name: "Mock task"
   ansible.builtin.debug:
     msg: "hello, world!"
+
+- name: "test"
+  debug:
+    msg: "test test test"
