@@ -1,12 +1,49 @@
 ---
-- name: "Copy installation files"
-  ansible.builtin.copy:
-    src: "{{ item }}"
-    dest: "/home/rustdesk-install/"
-    mode: preserve
-  loop: "{{ lookup('fileglob', role_path + '/files/*').split(',') }}"
+# - name: "Copy installation files"
+#   ansible.builtin.copy:
+#     src: "{{ item }}"
+#     dest: "/home/rustdesk-install/"
+#     mode: preserve
+#   loop: "{{ lookup('fileglob', role_path + '/files/*').split(',') }}"
 
-- name: "Execute installation script"
-  ansible.builtin.command:
-    chdir: /home/rustdesk-install/
-    cmd: /home/rustdesk-install/install-rustdesk.sh
+# - name: "Execute installation script"
+#   ansible.builtin.command:
+#     chdir: /home/rustdesk-install/
+#     cmd: /home/rustdesk-install/install-rustdesk.sh
+
+- name: "Create directories"
+  ansible.builtin.file:
+    path: /opt/rustdesk-server/bin
+    state: directory
+  ansible.builtin.file:
+    path: /opt/rustdesk-server/lib
+    state: directory
+
+- name: "Download binaries"
+  ansible.builtin.get_url:
+    url: "https://github.com/rustdesk/rustdesk-server/releases/download/{{ rustdesk_version }}/rustdesk-server-linux-amd64.zip"
+    dest: /opt/rustdesk-server/
+    mode: '755'
+
+- name: "Install unzip for unarchiving the binaries archive"
+  ansible.builtin.apt:
+    name: unzip
+    state: present
+    update_cache: yes
+
+- name: "Unzip the binaries"
+  ansible.builtin.unarchive:
+    src: /opt/rustdesk-server/rustdesk-server-linux-amd64.zip
+    dest: /opt/rustdesk-server/
+    remote_src: yes
+
+- name: "Copy the amd64 directory and rename to bin"
+  ansible.builtin.copy:
+    src: /opt/rustdesk-server/amd64
+    dest: /opt/rustdesk-server/bin
+    remote_src: yes
+
+- name: "Delete amd64 directory"
+  ansible.builtin.file:
+    path: /opt/rustdesk-server/amd64
+    state: absent
