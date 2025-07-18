@@ -1,22 +1,13 @@
 ---
-# - name: "Copy installation files"
-#   ansible.builtin.copy:
-#     src: "{{ item }}"
-#     dest: "/home/rustdesk-install/"
-#     mode: preserve
-#   loop: "{{ lookup('fileglob', role_path + '/files/*').split(',') }}"
 
-# - name: "Execute installation script"
-#   ansible.builtin.command:
-#     chdir: /home/rustdesk-install/
-#     cmd: /home/rustdesk-install/install-rustdesk.sh
-
-- name: "Create directories"
-  ansible.builtin.file:
-    path: /opt/rustdesk-server/bin
-    state: directory
+- name: "Create lib directory"
   ansible.builtin.file:
     path: /opt/rustdesk-server/lib
+    state: directory
+
+- name: "Create log directory"
+  ansible.builtin.file:
+    path: /opt/rustdesk-server/log
     state: directory
 
 - name: "Download binaries"
@@ -37,13 +28,78 @@
     dest: /opt/rustdesk-server/
     remote_src: yes
 
-- name: "Copy the amd64 directory and rename to bin"
+- name: "Move rustdesk-hbbr.service to /etc/systemd/system/"
   ansible.builtin.copy:
-    src: /opt/rustdesk-server/amd64
-    dest: /opt/rustdesk-server/bin
-    remote_src: yes
+    src: "rustdesk-hbbr.service"
+    dest: /etc/systemd/system
 
-- name: "Delete amd64 directory"
-  ansible.builtin.file:
-    path: /opt/rustdesk-server/amd64
-    state: absent
+- name: "Move rustdesk-hbbs.service to /etc/systemd/system/"  
+  ansible.builtin.copy:
+    src: "rustdesk-hbbs.service"
+    dest: /etc/systemd/system
+
+- name: "Reload systemd-daemon, start and enable rustdesk-hbbr"
+  ansible.builtin.service:
+    name: "rustdesk-hbbr"
+    state: started
+    enabled: true
+    daemon_reload: true
+  
+- name: "Start and enable rustdesk-hbbs"
+  ansible.builtin.service:
+    name: "rustdesk-hbbs"
+    state: started
+    enabled: true
+    daemon_reload: true
+
+- name: "Install ufw"
+  ansible.builtin.apt:
+    name: ufw
+    state: present
+
+# Setting up the firewall
+- name: "ufw allow ssh"
+  community.general.ufw:
+    rule: allow
+    port: ssh
+    proto: tcp
+
+- name: "ufw allow 21115/tcp"
+  community.general.ufw:
+    rule: allow
+    port: 21115
+    proto: tcp
+    
+- name: "ufw allow 21116/tcp"
+  community.general.ufw:
+    rule: allow
+    port: 21116
+    proto: tcp
+    
+- name: "ufw allow 21117/tcp"
+  community.general.ufw:
+    rule: allow
+    port: 21117
+    proto: tcp
+    
+- name: "ufw allow 21118/tcp"
+  community.general.ufw:
+    rule: allow
+    port: 21118
+    proto: tcp
+    
+- name: "ufw allow 21119/tcp"
+  community.general.ufw:
+    rule: allow
+    port: 21119
+    proto: tcp
+    
+- name: "ufw allow 21116/udp"
+  community.general.ufw:
+    rule: allow
+    port: 21116
+    proto: udp
+
+- name: "ufw enable"
+  community.general.ufw:
+    state: enabled

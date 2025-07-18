@@ -5,11 +5,11 @@ Description=Rustdesk Relay Server
 Type=simple
 LimitNOFILE=1000000
 Environment="RUST_LOG_LEVEL=trace"
-ExecStart=/usr/bin/hbbr
-WorkingDirectory=/var/lib/rustdesk-server/
+ExecStart=/opt/rustdesk-server/amd64/hbbr
+WorkingDirectory=/opt/rustdesk-server/lib/
 Restart=always
-StandardOutput=append:/var/log/rustdesk-server/hbbr.log
-StandardError=append:/var/log/rustdesk-server/hbbr.error
+StandardOutput=append:/opt/rustdesk-server/log/hbbr.log
+StandardError=append:/opt/rustdesk-server/log/hbbr.error
 RestartSec=10
 
 [Install]

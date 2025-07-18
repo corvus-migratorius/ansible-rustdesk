@@ -5,13 +5,13 @@ Description=Rustdesk Signal Server
 Type=simple
 LimitNOFILE=1000000
 Environment="RUST_LOG_LEVEL=trace"
-ExecStart=/usr/bin/hbbs
-WorkingDirectory=/var/lib/rustdesk-server/
+ExecStart=/opt/rustdesk-server/amd64/hbbs
+WorkingDirectory=/opt/rustdesk-server/lib/
 Restart=always
-StandardOutput=append:/var/log/rustdesk-server/hbbs.log
-StandardError=append:/var/log/rustdesk-server/hbbs.error
-# Restart service after 10 seconds if node service crashes
+StandardOutput=append:/opt/rustdesk-server/log/hbbs.log
+StandardError=append:/opt/rustdesk-server/log/hbbs.error
 RestartSec=10
 
 [Install]
 WantedBy=multi-user.target
+
