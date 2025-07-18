@@ -1,8 +1,8 @@
 ---
 galaxy_info:
-  role_name: "template"
+  role_name: "rustdesk-server"
   namespace: genlab
-  author: "Alexander Gorelyshev"
+  author: "Sergey Malyuk"
   company: "Genlab, LLC"
   description: ""
   license: "MIT"
