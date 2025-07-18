@@ -1,0 +1,17 @@
+[Unit]
+Description=Rustdesk Relay Server
+
+[Service]
+Type=simple
+LimitNOFILE=1000000
+Environment="RUST_LOG_LEVEL=trace"
+ExecStart=/opt/rustdesk-server/amd64/hbbr
+WorkingDirectory=/opt/rustdesk-server/lib/
+Restart=always
+StandardOutput=append:/opt/rustdesk-server/log/hbbr.log
+StandardError=append:/opt/rustdesk-server/log/hbbr.error
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+

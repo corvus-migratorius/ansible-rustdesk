@@ -1,0 +1,17 @@
+[Unit]
+Description=Rustdesk Signal Server
+
+[Service]
+Type=simple
+LimitNOFILE=1000000
+Environment="RUST_LOG_LEVEL=trace"
+ExecStart=/opt/rustdesk-server/amd64/hbbs
+WorkingDirectory=/opt/rustdesk-server/lib/
+Restart=always
+StandardOutput=append:/opt/rustdesk-server/log/hbbs.log
+StandardError=append:/opt/rustdesk-server/log/hbbs.error
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+

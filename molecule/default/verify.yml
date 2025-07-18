@@ -5,7 +5,15 @@
   any_errors_fatal: true
 
   tasks:
-    - name: "Mock verification task"
-      changed_when: false
-      ansible.builtin.command:
-        cmd: "true"
+    - name: "Gather service facts"
+      ansible.builtin.service_facts:
+
+    - name: "Check if rustdesk-hbbr is running"
+      ansible.builtin.debug:
+        msg: "rustdesk-hbbr is running"
+      when: ansible_facts.services["rustdesk-hbbr.service"].state == "running"
+
+    - name: "Check if rustdesk-hbbs is running"
+      ansible.builtin.debug:
+        msg: "rustdesk-hbbs is running"
+      when: ansible_facts.services["rustdesk-hbbs.service"].state == "running"
