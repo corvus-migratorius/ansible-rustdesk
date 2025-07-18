@@ -1,6 +1,6 @@
 ---
 galaxy_info:
-  role_name: "rustdesk-server"
+  role_name: "rustdesk_server"
   namespace: genlab
   author: "Sergey Malyuk"
   company: "Genlab, LLC"
