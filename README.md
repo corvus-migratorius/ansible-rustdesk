@@ -25,7 +25,7 @@ Example Playbook
 
 ```yaml
 roles:
-    - role: genlab.template
+    - role: genlab.rustdesk_server
 ```
 
 License
