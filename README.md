@@ -6,7 +6,10 @@ Rustdesk server role for ansible
 Requirements
 ------------
 
-None
+Ports:
+    tcp 21115, 21116, 21117, 21118, 21119
+    udp 21116
+
 
 Role Variables
 --------------
