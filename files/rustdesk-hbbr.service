@@ -8,8 +8,8 @@ Environment="RUST_LOG_LEVEL=trace"
 ExecStart=/opt/rustdesk-server/amd64/hbbr
 WorkingDirectory=/opt/rustdesk-server/lib/
 Restart=always
-StandardOutput=append:/opt/rustdesk-server/log/hbbr.log
-StandardError=append:/opt/rustdesk-server/log/hbbr.error
+StandardOutput=append:/var/log/rustdesk-server/hbbr.log
+StandardError=append:/var/log/rustdesk-server/hbbr.error
 RestartSec=10
 
 [Install]

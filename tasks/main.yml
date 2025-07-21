@@ -30,7 +30,7 @@
 
   - name: "Create log directory"
     ansible.builtin.file:
-      path: /opt/rustdesk-server/log
+      path: /var/log/rustdesk-server/
       state: directory
       mode: "0755"
 
