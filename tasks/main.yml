@@ -4,39 +4,43 @@
   ansible.builtin.file:
     path: /opt/rustdesk-server/lib
     state: directory
+    mode: "0755"
 
 - name: "Create log directory"
   ansible.builtin.file:
     path: /opt/rustdesk-server/log
     state: directory
+    mode: "0755"
 
 - name: "Download binaries"
   ansible.builtin.get_url:
     url: "https://github.com/rustdesk/rustdesk-server/releases/download/{{ rustdesk_version }}/rustdesk-server-linux-amd64.zip"
     dest: /opt/rustdesk-server/
-    mode: '755'
+    mode: "0755"
 
 - name: "Install unzip for unarchiving the binaries archive"
   ansible.builtin.apt:
     name: unzip
     state: present
-    update_cache: yes
+    update_cache: true
 
 - name: "Unzip the binaries"
   ansible.builtin.unarchive:
     src: /opt/rustdesk-server/rustdesk-server-linux-amd64.zip
     dest: /opt/rustdesk-server/
-    remote_src: yes
+    remote_src: true
 
 - name: "Move rustdesk-hbbr.service to /etc/systemd/system/"
   ansible.builtin.copy:
     src: "rustdesk-hbbr.service"
     dest: /etc/systemd/system
+    mode: "0755"
 
-- name: "Move rustdesk-hbbs.service to /etc/systemd/system/"  
+- name: "Move rustdesk-hbbs.service to /etc/systemd/system/"
   ansible.builtin.copy:
     src: "rustdesk-hbbs.service"
     dest: /etc/systemd/system
+    mode: "0755"
 
 - name: "Reload systemd-daemon, start and enable rustdesk-hbbr"
   ansible.builtin.service:
@@ -44,62 +48,10 @@
     state: started
     enabled: true
     daemon_reload: true
-  
+
 - name: "Start and enable rustdesk-hbbs"
   ansible.builtin.service:
     name: "rustdesk-hbbs"
     state: started
     enabled: true
     daemon_reload: true
-
-- name: "Install ufw"
-  ansible.builtin.apt:
-    name: ufw
-    state: present
-
-# Setting up the firewall
-- name: "ufw allow ssh"
-  community.general.ufw:
-    rule: allow
-    port: ssh
-    proto: tcp
-
-- name: "ufw allow 21115/tcp"
-  community.general.ufw:
-    rule: allow
-    port: 21115
-    proto: tcp
-    
-- name: "ufw allow 21116/tcp"
-  community.general.ufw:
-    rule: allow
-    port: 21116
-    proto: tcp
-    
-- name: "ufw allow 21117/tcp"
-  community.general.ufw:
-    rule: allow
-    port: 21117
-    proto: tcp
-    
-- name: "ufw allow 21118/tcp"
-  community.general.ufw:
-    rule: allow
-    port: 21118
-    proto: tcp
-    
-- name: "ufw allow 21119/tcp"
-  community.general.ufw:
-    rule: allow
-    port: 21119
-    proto: tcp
-    
-- name: "ufw allow 21116/udp"
-  community.general.ufw:
-    rule: allow
-    port: 21116
-    proto: udp
-
-- name: "ufw enable"
-  community.general.ufw:
-    state: enabled
