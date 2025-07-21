@@ -1,46 +1,68 @@
 ---
 
-- name: "Create lib directory"
-  ansible.builtin.file:
-    path: /opt/rustdesk-server/lib
-    state: directory
-    mode: "0755"
+- block:
+  - name: "Check if hbbr is installed"
+    ansible.builtin.command:
+      cmd: "/opt/rustdesk-server/amd64/hbbr --version"
+    register: hbbr_output
 
-- name: "Create log directory"
-  ansible.builtin.file:
-    path: /opt/rustdesk-server/log
-    state: directory
-    mode: "0755"
+  - name: "Fail if current and target versions of hbbr don't match"
+    ansible.builtin.fail:
+      msg: "hbbr is either not installed or does not match the target version"
+    when: hbbr_output.stdout != "hbbr " + rustdesk_version
 
-- name: "Download binaries"
-  ansible.builtin.get_url:
-    url: "https://github.com/rustdesk/rustdesk-server/releases/download/{{ rustdesk_version }}/rustdesk-server-linux-amd64.zip"
-    dest: /opt/rustdesk-server/
-    mode: "0755"
+  - name: "Check if hbbs is installed"
+    ansible.builtin.command:
+      cmd: "/opt/rustdesk-server/amd64/hbbs --version"
+    register: hbbs_output
+    
+  - name: "Fail if current and target versions of hbbs don't match"
+    ansible.builtin.fail:
+      msg: "hbbs is either not installed or does not match the target version"
+    when: hbbs_output.stdout != "hbbs " + rustdesk_version
 
-- name: "Install unzip for unarchiving the binaries archive"
-  ansible.builtin.apt:
-    name: unzip
-    state: present
-    update_cache: true
+  rescue:
+  - name: "Create lib directory"
+    ansible.builtin.file:
+      path: /opt/rustdesk-server/lib
+      state: directory
+      mode: "0755"
 
-- name: "Unzip the binaries"
-  ansible.builtin.unarchive:
-    src: /opt/rustdesk-server/rustdesk-server-linux-amd64.zip
-    dest: /opt/rustdesk-server/
-    remote_src: true
+  - name: "Create log directory"
+    ansible.builtin.file:
+      path: /opt/rustdesk-server/log
+      state: directory
+      mode: "0755"
 
-- name: "Move rustdesk-hbbr.service to /etc/systemd/system/"
-  ansible.builtin.copy:
-    src: "rustdesk-hbbr.service"
-    dest: /etc/systemd/system
-    mode: "0755"
+  - name: "Download binaries"
+    ansible.builtin.get_url:
+      url: "https://github.com/rustdesk/rustdesk-server/releases/download/{{ rustdesk_version }}/rustdesk-server-linux-amd64.zip"
+      dest: /opt/rustdesk-server/
+      mode: "0755"
 
-- name: "Move rustdesk-hbbs.service to /etc/systemd/system/"
-  ansible.builtin.copy:
-    src: "rustdesk-hbbs.service"
-    dest: /etc/systemd/system
-    mode: "0755"
+  - name: "Install unzip for unarchiving the binaries archive"
+    ansible.builtin.apt:
+      name: unzip
+      state: present
+      update_cache: true
+
+  - name: "Unzip the binaries"
+    ansible.builtin.unarchive:
+      src: /opt/rustdesk-server/rustdesk-server-linux-amd64.zip
+      dest: /opt/rustdesk-server/
+      remote_src: true
+
+  - name: "Move rustdesk-hbbr.service to /etc/systemd/system/"
+    ansible.builtin.copy:
+      src: "rustdesk-hbbr.service"
+      dest: /etc/systemd/system
+      mode: "0755"
+
+  - name: "Move rustdesk-hbbs.service to /etc/systemd/system/"
+    ansible.builtin.copy:
+      src: "rustdesk-hbbs.service"
+      dest: /etc/systemd/system
+      mode: "0755"
 
 - name: "Reload systemd-daemon, start and enable rustdesk-hbbr"
   ansible.builtin.service:
