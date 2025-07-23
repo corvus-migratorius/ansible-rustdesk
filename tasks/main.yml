@@ -9,9 +9,10 @@
         cmd: "/opt/rustdesk-server/amd64/hbbr --version"
 
     - name: "Check if the version of hbbr is the expected one"
-      when: hbbr_output.stdout != "hbbr " + rustdesk_version
-      ansible.builtin.fail:
-        msg: "hbbr is either not installed or does not match the target version"
+      ansible.builtin.assert:
+        that: "hbbr_output.stdout == 'hbbr {{ rustdesk_version }}'"
+        success_msg: "hbbr is installed and is the correct version"
+        fail_msg: "hbbr is either not installed or does not match the target version"
 
     - name: "Check hbbs version"
       register: hbbs_output
@@ -20,9 +21,10 @@
         cmd: "/opt/rustdesk-server/amd64/hbbs --version"
 
     - name: "Check if the version of hbbs is the expected one"
-      when: hbbs_output.stdout != "hbbs " + rustdesk_version
-      ansible.builtin.fail:
-        msg: "hbbs is either not installed or does not match the target version"
+      ansible.builtin.assert:
+        that: "hbbs_output.stdout == 'hbbs {{ rustdesk_version }}'"
+        success_msg: "hbbs is installed and is the correct version"
+        fail_msg: "hbbs is either not installed or does not match the target version"
 
   rescue:
     # Rustdesk uses /opt/rustdesk-server/lib as a working directory. When it's first started it generates key pairs and puts them in lib directory
