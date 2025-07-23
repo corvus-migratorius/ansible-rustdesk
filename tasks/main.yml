@@ -3,26 +3,26 @@
 - name: "Check if rustdesk is installed and install it if it's not"
   block:
     - name: "Check if hbbr is installed"
-      ansible.builtin.command:
-        cmd: "/opt/rustdesk-server/amd64/hbbr --version"
       register: hbbr_output
       changed_when: false
+      ansible.builtin.command:
+        cmd: "/opt/rustdesk-server/amd64/hbbr --version"
 
     - name: "Fail if current and target versions of hbbr don't match"
+      when: hbbr_output.stdout != "hbbr " + rustdesk_version
       ansible.builtin.fail:
         msg: "hbbr is either not installed or does not match the target version"
-      when: hbbr_output.stdout != "hbbr " + rustdesk_version
 
     - name: "Check if hbbs is installed"
-      ansible.builtin.command:
-        cmd: "/opt/rustdesk-server/amd64/hbbs --version"
       register: hbbs_output
       changed_when: false
+      ansible.builtin.command:
+        cmd: "/opt/rustdesk-server/amd64/hbbs --version"
 
     - name: "Fail if current and target versions of hbbs don't match"
+      when: hbbs_output.stdout != "hbbs " + rustdesk_version
       ansible.builtin.fail:
         msg: "hbbs is either not installed or does not match the target version"
-      when: hbbs_output.stdout != "hbbs " + rustdesk_version
 
   rescue:
     - name: "Create lib directory"
@@ -38,33 +38,33 @@
         mode: "0755"
 
     - name: "Install unzip for unarchiving the binaries archive on Debian family"
+      when: ansible_os_family == "Debian"
       ansible.builtin.apt:
         name: unzip
         state: present
         update_cache: true
-      when: ansible_os_family == "Debian"
 
     - name: "Install unzip for unarchiving the binaries archive on RedHat family"
+      when: ansible_os_family == "RedHat"
       ansible.builtin.dnf:
         name: unzip
         state: present
-      when: ansible_os_family == "RedHat"
 
     - name: "Install unzip for unarchiving the binaries archive on FreeBSD family"
+      when: ansible_os_family == "FreeBSD"
       community.general.pkgng:
         name: unzip
         state: present
-      when: ansible_os_family == "FreeBSD"
 
     - name: "Install unzip for unarchiving the binaries archive on other OS"
-      ansible.builtin.package:
-        name: unzip
-        state: present
-        update_cache: true
       when:
         - ansible_os_family != "Debian"
         - and ansible_os_family != "RedHat"
         - and ansible_os_family != "FreeBSD"
+      ansible.builtin.package:
+        name: unzip
+        state: present
+        update_cache: true
 
     - name: "Unzip the binaries"
       ansible.builtin.unarchive:
@@ -73,15 +73,15 @@
         remote_src: true
 
     - name: "Move rustdesk-hbbr.service to /etc/systemd/system/"
+      notify: "Start and enable rustdesk-hbbr.service"
       ansible.builtin.copy:
         src: "rustdesk-hbbr.service"
         dest: /etc/systemd/system
         mode: "0755"
-      notify: "Start and enable rustdesk-hbbr.service"
 
     - name: "Move rustdesk-hbbs.service to /etc/systemd/system/"
+      notify: "Start and enable rustdesk-hbbs.service"
       ansible.builtin.copy:
         src: "rustdesk-hbbs.service"
         dest: /etc/systemd/system
         mode: "0755"
-      notify: "Start and enable rustdesk-hbbs.service"
