@@ -1,30 +1,31 @@
 ---
 
-- name: "Check if rustdesk is installed and install it if it's not"
+- name: "Install rustdesk"
   block:
-    - name: "Check if hbbr is installed"
+    - name: "Check hbbr version"
       register: hbbr_output
       changed_when: false
       ansible.builtin.command:
         cmd: "/opt/rustdesk-server/amd64/hbbr --version"
 
-    - name: "Fail if current and target versions of hbbr don't match"
+    - name: "Check if the version of hbbr is the expected one"
       when: hbbr_output.stdout != "hbbr " + rustdesk_version
       ansible.builtin.fail:
         msg: "hbbr is either not installed or does not match the target version"
 
-    - name: "Check if hbbs is installed"
+    - name: "Check hbbs version"
       register: hbbs_output
       changed_when: false
       ansible.builtin.command:
         cmd: "/opt/rustdesk-server/amd64/hbbs --version"
 
-    - name: "Fail if current and target versions of hbbs don't match"
+    - name: "Check if the version of hbbs is the expected one"
       when: hbbs_output.stdout != "hbbs " + rustdesk_version
       ansible.builtin.fail:
         msg: "hbbs is either not installed or does not match the target version"
 
   rescue:
+    # Rustdesk uses /opt/rustdesk-server/lib as a working directory. When it's first started it generates key pairs and puts them in lib directory
     - name: "Create lib directory"
       ansible.builtin.file:
         path: /opt/rustdesk-server/lib
@@ -66,7 +67,7 @@
         state: present
         update_cache: true
 
-    - name: "Unzip the binaries"
+    - name: "Download and unarchive the binaries"
       ansible.builtin.unarchive:
         src: "https://github.com/rustdesk/rustdesk-server/releases/download/{{ rustdesk_version }}/rustdesk-server-linux-amd64.zip"
         dest: /opt/rustdesk-server/
