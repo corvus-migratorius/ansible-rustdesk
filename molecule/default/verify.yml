@@ -9,11 +9,11 @@
       ansible.builtin.service_facts:
 
     - name: "Check if rustdesk-hbbr is running"
+      when: ansible_facts.services["rustdesk-hbbr.service"].state == "running"
       ansible.builtin.debug:
         msg: "rustdesk-hbbr is running"
-      when: ansible_facts.services["rustdesk-hbbr.service"].state == "running"
 
     - name: "Check if rustdesk-hbbs is running"
+      when: ansible_facts.services["rustdesk-hbbs.service"].state == "running"
       ansible.builtin.debug:
         msg: "rustdesk-hbbs is running"
-      when: ansible_facts.services["rustdesk-hbbs.service"].state == "running"
