@@ -11,7 +11,17 @@ Restart=always
 StandardOutput=append:/var/log/rustdesk-server/hbbs.log
 StandardError=append:/var/log/rustdesk-server/hbbs.error
 RestartSec=10
+User=root
+Group=root
+
+# Security
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+ProtectKernelTunables=true
+ProtectClock=yes
+RestrictSUIDSGID=true
 
 [Install]
 WantedBy=multi-user.target
-
