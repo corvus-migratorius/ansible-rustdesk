@@ -33,12 +33,16 @@
         path: /opt/rustdesk-server/lib
         state: directory
         mode: "0755"
+        owner: "root"
+        group: "root"
 
     - name: "Create log directory"
       ansible.builtin.file:
         path: /var/log/rustdesk-server/
         state: directory
         mode: "0755"
+        owner: "root"
+        group: "root"
 
     - name: "Install unzip for unarchiving the binaries archive on Debian family"
       when: ansible_os_family == "Debian"
@@ -81,6 +85,8 @@
         src: "rustdesk-hbbr.service"
         dest: /etc/systemd/system
         mode: "0755"
+        owner: "root"
+        group: "root"
 
     - name: "Move rustdesk-hbbs.service to /etc/systemd/system/"
       notify: "Start and enable rustdesk-hbbs.service"
@@ -88,3 +94,5 @@
         src: "rustdesk-hbbs.service"
         dest: /etc/systemd/system
         mode: "0755"
+        owner: "root"
+        group: "root"
