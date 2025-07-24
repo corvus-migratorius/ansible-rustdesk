@@ -1,23 +1,21 @@
-template
+Rustdesk Server
 =========
 
-Template for Ansible role monorepos.
-
-⚠️ Do not forget to update:
-
-- `meta/main.yml`
-- Conda/Mamba manifests
-- this README =) including *the name at the top* and *maintainers*.
+Rustdesk server role for ansible
 
 Requirements
 ------------
 
-None
+Ports:  
+```
+tcp 21115, 21116, 21117, 21118, 21119  
+udp 21116
+```
 
 Role Variables
 --------------
 
-None
+``` rustdesk_version ``` — contains rustdesk-server version to be installed
 
 Dependencies
 ------------
@@ -29,7 +27,7 @@ Example Playbook
 
 ```yaml
 roles:
-    - role: genlab.template
+    - role: genlab.rustdesk_server
 ```
 
 License
@@ -40,4 +38,4 @@ BSD
 Author Information
 ------------------
 
-corvus-migratorius@proton.me
+malyuk.ss@genlab.llc
