@@ -15,9 +15,7 @@ udp 21116
 Role Variables
 --------------
 
-```yaml
-rustdesk_version: "1.1.14"
-```
+``` rustdesk_version ``` — contains rustdesk-server version to be installed
 
 Dependencies
 ------------
