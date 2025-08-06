@@ -1,4 +1,98 @@
 ---
-- name: "Mock task"
-  ansible.builtin.debug:
-    msg: "hello, world!"
+
+- name: "Install rustdesk"
+  block:
+    - name: "Check hbbr version"
+      register: hbbr_output
+      changed_when: false
+      ansible.builtin.command:
+        cmd: "/opt/rustdesk-server/amd64/hbbr --version"
+
+    - name: "Check if the version of hbbr is the expected one"
+      ansible.builtin.assert:
+        that: "hbbr_output.stdout == 'hbbr {{ rustdesk_version }}'"
+        success_msg: "hbbr is installed and is the correct version"
+        fail_msg: "hbbr is either not installed or does not match the target version"
+
+    - name: "Check hbbs version"
+      register: hbbs_output
+      changed_when: false
+      ansible.builtin.command:
+        cmd: "/opt/rustdesk-server/amd64/hbbs --version"
+
+    - name: "Check if the version of hbbs is the expected one"
+      ansible.builtin.assert:
+        that: "hbbs_output.stdout == 'hbbs {{ rustdesk_version }}'"
+        success_msg: "hbbs is installed and is the correct version"
+        fail_msg: "hbbs is either not installed or does not match the target version"
+
+  rescue:
+    # Rustdesk uses /opt/rustdesk-server/lib as a working directory. When it's first started it generates key pairs and puts them in lib directory
+    - name: "Create lib directory"
+      ansible.builtin.file:
+        path: /opt/rustdesk-server/lib
+        state: directory
+        mode: "0755"
+        owner: "root"
+        group: "root"
+
+    - name: "Create log directory"
+      ansible.builtin.file:
+        path: /var/log/rustdesk-server/
+        state: directory
+        mode: "0755"
+        owner: "root"
+        group: "root"
+
+    - name: "Install unzip for unarchiving the binaries archive on Debian family"
+      when: ansible_os_family == "Debian"
+      ansible.builtin.apt:
+        name: unzip
+        state: present
+        update_cache: true
+
+    - name: "Install unzip for unarchiving the binaries archive on RedHat family"
+      when: ansible_os_family == "RedHat"
+      ansible.builtin.dnf:
+        name: unzip
+        state: present
+
+    - name: "Install unzip for unarchiving the binaries archive on FreeBSD family"
+      when: ansible_os_family == "FreeBSD"
+      community.general.pkgng:
+        name: unzip
+        state: present
+
+    - name: "Install unzip for unarchiving the binaries archive on other OS"
+      when:
+        - ansible_os_family != "Debian"
+        - and ansible_os_family != "RedHat"
+        - and ansible_os_family != "FreeBSD"
+      ansible.builtin.package:
+        name: unzip
+        state: present
+        update_cache: true
+
+    - name: "Download and unarchive the binaries"
+      ansible.builtin.unarchive:
+        src: "https://github.com/rustdesk/rustdesk-server/releases/download/{{ rustdesk_version }}/rustdesk-server-linux-amd64.zip"
+        dest: /opt/rustdesk-server/
+        remote_src: true
+
+    - name: "Move rustdesk-hbbr.service to /etc/systemd/system/"
+      notify: "Start and enable rustdesk-hbbr.service"
+      ansible.builtin.copy:
+        src: "rustdesk-hbbr.service"
+        dest: /etc/systemd/system
+        mode: "0755"
+        owner: "root"
+        group: "root"
+
+    - name: "Move rustdesk-hbbs.service to /etc/systemd/system/"
+      notify: "Start and enable rustdesk-hbbs.service"
+      ansible.builtin.copy:
+        src: "rustdesk-hbbs.service"
+        dest: /etc/systemd/system
+        mode: "0755"
+        owner: "root"
+        group: "root"

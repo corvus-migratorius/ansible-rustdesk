@@ -1,0 +1,28 @@
+[Unit]
+Description=Rustdesk Signal Server
+
+[Service]
+Type=simple
+LimitNOFILE=1000000
+Environment="RUST_LOG_LEVEL=trace"
+ExecStart=/opt/rustdesk-server/amd64/hbbs
+WorkingDirectory=/opt/rustdesk-server/lib/
+Restart=always
+StandardOutput=append:/var/log/rustdesk-server/hbbs.log
+StandardError=append:/var/log/rustdesk-server/hbbs.error
+RestartSec=10
+User=root
+Group=root
+
+# Security
+ProtectSystem=full
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+ProtectKernelTunables=true
+ProtectClock=yes
+RestrictSUIDSGID=true
+
+[Install]
+WantedBy=multi-user.target
