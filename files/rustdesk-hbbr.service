@@ -5,17 +5,23 @@ Description=Rustdesk Relay Server
 Type=simple
 LimitNOFILE=1000000
 Environment="RUST_LOG_LEVEL=trace"
-ExecStart=/opt/rustdesk-server/amd64/hbbr
 WorkingDirectory=/opt/rustdesk-server/lib/
-Restart=always
+
+ExecStart=/opt/rustdesk-server/amd64/hbbr
+
 StandardOutput=append:/var/log/rustdesk-server/hbbr.log
 StandardError=append:/var/log/rustdesk-server/hbbr.error
+
+Restart=always
 RestartSec=10
+
 User=root
 Group=root
 
 # Security
-ProtectSystem=strict
+ProtectSystem=full
+ReadWritePaths=/opt/rustdesk-server/lib/
+ReadWritePaths=/var/log/rustdesk-server/
 NoNewPrivileges=true
 PrivateTmp=true
 ProtectKernelModules=true

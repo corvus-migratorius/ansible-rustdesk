@@ -5,17 +5,24 @@ Description=Rustdesk Signal Server
 Type=simple
 LimitNOFILE=1000000
 Environment="RUST_LOG_LEVEL=trace"
-ExecStart=/opt/rustdesk-server/amd64/hbbs
 WorkingDirectory=/opt/rustdesk-server/lib/
-Restart=always
+
+ExecStartPre=/bin/sh -c 'rm -rf /opt/rustdesk-server/lib/*'
+ExecStart=/opt/rustdesk-server/amd64/hbbs
+
 StandardOutput=append:/var/log/rustdesk-server/hbbs.log
 StandardError=append:/var/log/rustdesk-server/hbbs.error
+
+Restart=always
 RestartSec=10
+
 User=root
 Group=root
 
 # Security
 ProtectSystem=full
+ReadWritePaths=/opt/rustdesk-server/lib/
+ReadWritePaths=/var/log/rustdesk-server/
 NoNewPrivileges=true
 PrivateTmp=true
 ProtectKernelModules=true
