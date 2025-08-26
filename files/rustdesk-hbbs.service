@@ -9,6 +9,7 @@ WorkingDirectory=/opt/rustdesk-server/lib/
 
 ExecStartPre=/bin/sh -c 'rm -rf /opt/rustdesk-server/lib/*'
 ExecStart=/opt/rustdesk-server/amd64/hbbs
+ExecStartPost=/opt/rustdesk-server/generate-rustdesk-bat.sh
 
 StandardOutput=append:/var/log/rustdesk-server/hbbs.log
 StandardError=append:/var/log/rustdesk-server/hbbs.error

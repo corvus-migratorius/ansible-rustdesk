@@ -79,7 +79,44 @@
         dest: /opt/rustdesk-server/
         remote_src: true
 
-    - name: "Move rustdesk-hbbr.service to /etc/systemd/system/"
+    - name: "Move generate-rustdesk-bat.sh to /opt/rustdesk-server"
+      ansible.builtin.copy:
+        src: "generate-rustdesk-bat.sh"
+        dest: /opt/rustdesk-server
+        mode: "0755"
+        owner: "root"
+        group: "root"
+
+    - name: "Install curl for generate-rustdesk-bat.sh script on Debian family"
+      when: ansible_os_family == "Debian"
+      ansible.builtin.apt:
+        name: curl
+        state: present
+        update_cache: true
+
+    - name: "Install curl for generate-rustdesk-bat.sh script on RedHat family"
+      when: ansible_os_family == "RedHat"
+      ansible.builtin.dnf:
+        name: curl
+        state: present
+
+    - name: "Install curl for generate-rustdesk-bat.sh script on FreeBSD family"
+      when: ansible_os_family == "FreeBSD"
+      community.general.pkgng:
+        name: curl
+        state: present
+
+    - name: "Install curl for generate-rustdesk-bat.sh script on other OS"
+      when:
+        - ansible_os_family != "Debian"
+        - and ansible_os_family != "RedHat"
+        - and ansible_os_family != "FreeBSD"
+      ansible.builtin.package:
+        name: curl
+        state: present
+        update_cache: true
+
+    - name: "Copy rustdesk-hbbr.service to /etc/systemd/system/"
       notify: "Start and enable rustdesk-hbbr.service"
       ansible.builtin.copy:
         src: "rustdesk-hbbr.service"
@@ -88,7 +125,7 @@
         owner: "root"
         group: "root"
 
-    - name: "Move rustdesk-hbbs.service to /etc/systemd/system/"
+    - name: "Copy rustdesk-hbbs.service to /etc/systemd/system/"
       notify: "Start and enable rustdesk-hbbs.service"
       ansible.builtin.copy:
         src: "rustdesk-hbbs.service"
