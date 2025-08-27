@@ -2,7 +2,7 @@
 
 cat <<EOF > /opt/rustdesk-server/lib/update-rustdesk.bat
 :: turning printing executed commands off
-:: and changing locale to utf-8
+:: and changing encoding to utf-8
 @echo off
 chcp 65001 >nul
 
@@ -24,8 +24,8 @@ echo key = '$(cat /opt/rustdesk-server/lib/*.pub)'
 
 :: killing rustdesk process and restarting its service
 taskkill /IM rustdesk.exe /F >nul 2>&1
-:: sc stop RustDesk
-:: sc start RustDesk
+sc stop RustDesk
+sc start RustDesk
 
 echo Конфигурация RustDesk обновлена
 
