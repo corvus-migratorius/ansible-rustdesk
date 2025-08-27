@@ -35,7 +35,7 @@
         dest: /opt/rustdesk-server/
         remote_src: true
 
-    - name: "Move generate-rustdesk-bat.sh to /opt/rustdesk-server"
+    - name: "Copy generate-rustdesk-bat.sh to /opt/rustdesk-server"
       ansible.builtin.copy:
         src: "generate-rustdesk-bat.sh"
         dest: /opt/rustdesk-server
