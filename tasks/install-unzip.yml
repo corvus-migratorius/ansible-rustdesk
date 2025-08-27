@@ -1,0 +1,30 @@
+---
+
+- name: "Install unzip for unarchiving the binaries archive on Debian family"
+  when: ansible_os_family == "Debian"
+  ansible.builtin.apt:
+    name: unzip
+    state: present
+    update_cache: true
+
+- name: "Install unzip for unarchiving the binaries archive on RedHat family"
+  when: ansible_os_family == "RedHat"
+  ansible.builtin.dnf:
+    name: unzip
+    state: present
+
+- name: "Install unzip for unarchiving the binaries archive on FreeBSD family"
+  when: ansible_os_family == "FreeBSD"
+  community.general.pkgng:
+    name: unzip
+    state: present
+
+- name: "Install unzip for unarchiving the binaries archive on other OS"
+  when:
+    - ansible_os_family != "Debian"
+    - and ansible_os_family != "RedHat"
+    - and ansible_os_family != "FreeBSD"
+  ansible.builtin.package:
+    name: unzip
+    state: present
+    update_cache: true
