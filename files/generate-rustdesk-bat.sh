@@ -21,6 +21,7 @@ taskkill /IM rustdesk.exe /F >nul 2>&1
 :: /F - force
 
 :: rewriting rustdesk config
+mkdir "%appdata%\RustDesk\config\" 2>nul
 (
 echo [options]
 echo custom-rendezvous-server = '$(curl ifconfig.me)'
