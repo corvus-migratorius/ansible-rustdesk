@@ -14,6 +14,12 @@ if %errorlevel% neq 0 (
     exit /b
 )
 
+:: killing rustdesk process and stoping its service
+sc stop RustDesk >nul 2>&1
+taskkill /IM rustdesk.exe /F >nul 2>&1
+:: /IM - image name (process name in human language or the name of an executed file)
+:: /F - force
+
 :: rewriting rustdesk config
 (
 echo [options]
@@ -21,16 +27,7 @@ echo custom-rendezvous-server = '$(curl ifconfig.me)'
 echo key = '$(cat /opt/rustdesk-server/lib/*.pub)'
 ) > %appdata%\RustDesk\config\RustDesk2.toml
 
-
-:: killing rustdesk process and restarting its service
-:: /IM - image name (process name in human language or the name of an executed file)
-:: /F - force
-taskkill /IM rustdesk.exe /F >nul 2>&1
-sc stop RustDesk
-sc start RustDesk
-
 echo Конфигурация RustDesk обновлена
-
 
 pause
 EOF
