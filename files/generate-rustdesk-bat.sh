@@ -23,6 +23,8 @@ echo key = '$(cat /opt/rustdesk-server/lib/*.pub)'
 
 
 :: killing rustdesk process and restarting its service
+:: /IM - image name (process name in human language or the name of an executed file)
+:: /F - force
 taskkill /IM rustdesk.exe /F >nul 2>&1
 sc stop RustDesk
 sc start RustDesk
