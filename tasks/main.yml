@@ -12,22 +12,20 @@
     - name: "Install curl"
       ansible.builtin.include_tasks: install-curl.yml
 
-    # Rustdesk uses /opt/rustdesk-server/lib as a working directory. When it's first started it generates key pairs and puts them in lib directory
+    - name: "Add user rustdesk"
+      ansible.builtin.user:
+        name: "rustdesk"
+        shell: /usr/sbin/nologin
+        create_home: false
+
+    # Rustdesk uses /opt/rustdesk-server/lib/ as a working directory. When it's first started it generates key pairs and puts them in lib directory
     - name: "Create lib directory"
       ansible.builtin.file:
-        path: /opt/rustdesk-server/lib
+        path: /opt/rustdesk-server/lib/
         state: directory
         mode: "0755"
-        owner: "root"
-        group: "root"
-
-    - name: "Create log directory"
-      ansible.builtin.file:
-        path: /var/log/rustdesk-server/
-        state: directory
-        mode: "0755"
-        owner: "root"
-        group: "root"
+        owner: "rustdesk"
+        group: "rustdesk"
 
     - name: "Download and unarchive the binaries"
       ansible.builtin.unarchive:
@@ -35,28 +33,28 @@
         dest: /opt/rustdesk-server/
         remote_src: true
 
-    - name: "Copy generate-rustdesk-bat.sh to /opt/rustdesk-server"
+    - name: "Copy generate-rustdesk-bat.sh to /opt/rustdesk-server/"
       ansible.builtin.copy:
         src: "generate-rustdesk-bat.sh"
-        dest: /opt/rustdesk-server
+        dest: /opt/rustdesk-server/
         mode: "0755"
-        owner: "root"
-        group: "root"
+        owner: "rustdesk"
+        group: "rustdesk"
 
     - name: "Copy rustdesk-hbbr.service to /etc/systemd/system/"
       notify: "Start and enable rustdesk-hbbr.service"
       ansible.builtin.copy:
         src: "rustdesk-hbbr.service"
-        dest: /etc/systemd/system
+        dest: /etc/systemd/system/
         mode: "0755"
-        owner: "root"
-        group: "root"
+        owner: "rustdesk"
+        group: "rustdesk"
 
     - name: "Copy rustdesk-hbbs.service to /etc/systemd/system/"
       notify: "Start and enable rustdesk-hbbs.service"
       ansible.builtin.copy:
         src: "rustdesk-hbbs.service"
-        dest: /etc/systemd/system
+        dest: /etc/systemd/system/
         mode: "0755"
-        owner: "root"
-        group: "root"
+        owner: "rustdesk"
+        group: "rustdesk"
