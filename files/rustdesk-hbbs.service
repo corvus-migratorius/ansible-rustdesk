@@ -7,7 +7,7 @@ LimitNOFILE=10000
 Environment="RUST_LOG_LEVEL=trace"
 WorkingDirectory=/opt/rustdesk-server/lib/
 
-ExecStartPre=/bin/sh -c 'rm -rf /opt/rustdesk-server/lib/*'
+ExecStartPre=/bin/sh -c 'rm -rf /opt/rustdesk-server/lib/id_ed25519*'
 ExecStart=/opt/rustdesk-server/amd64/hbbs
 ExecStartPost=/opt/rustdesk-server/generate-rustdesk-bat.sh
 

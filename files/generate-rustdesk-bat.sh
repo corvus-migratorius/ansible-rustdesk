@@ -25,7 +25,7 @@ mkdir "%appdata%\RustDesk\config\" 2>nul
 (
 echo [options]
 echo custom-rendezvous-server = '$(curl ifconfig.me)'
-echo key = '$(cat /opt/rustdesk-server/lib/*.pub)'
+echo key = '$(cat /opt/rustdesk-server/lib/id_ed25519.pub)'
 ) > %appdata%\RustDesk\config\RustDesk2.toml
 
 echo Конфигурация RustDesk обновлена
