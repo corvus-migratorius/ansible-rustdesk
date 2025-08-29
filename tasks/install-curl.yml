@@ -1,0 +1,30 @@
+---
+
+- name: "Install curl for generate-rustdesk-bat.sh script on Debian family"
+  when: ansible_os_family == "Debian"
+  ansible.builtin.apt:
+    name: curl
+    state: present
+    update_cache: true
+
+- name: "Install curl for generate-rustdesk-bat.sh script on RedHat family"
+  when: ansible_os_family == "RedHat"
+  ansible.builtin.dnf:
+    name: curl
+    state: present
+
+- name: "Install curl for generate-rustdesk-bat.sh script on FreeBSD family"
+  when: ansible_os_family == "FreeBSD"
+  community.general.pkgng:
+    name: curl
+    state: present
+
+- name: "Install curl for generate-rustdesk-bat.sh script on other OS"
+  when:
+    - ansible_os_family != "Debian"
+    - and ansible_os_family != "RedHat"
+    - and ansible_os_family != "FreeBSD"
+  ansible.builtin.package:
+    name: curl
+    state: present
+    update_cache: true
