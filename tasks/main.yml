@@ -1,60 +1,59 @@
 ---
 
+- name: "Install unzip"
+  ansible.builtin.include_tasks: install-unzip.yml
+
+- name: "Install curl"
+  ansible.builtin.include_tasks: install-curl.yml
+
+- name: "Add user rustdesk"
+  ansible.builtin.user:
+    name: "rustdesk"
+    shell: /usr/sbin/nologin
+    create_home: false
+
+# Rustdesk uses /opt/rustdesk-server/lib/ as a working directory. When it's first started it generates key pairs and puts them in lib directory
+- name: "Create lib directory"
+  ansible.builtin.file:
+    path: /opt/rustdesk-server/lib/
+    state: directory
+    mode: "0755"
+    owner: "rustdesk"
+    group: "rustdesk"
+
+- name: "Copy generate-rustdesk-exe.sh to /opt/rustdesk-server/"
+  ansible.builtin.copy:
+    src: "generate-rustdesk-exe.sh"
+    dest: /opt/rustdesk-server/
+    mode: "0755"
+    owner: "rustdesk"
+    group: "rustdesk"
+
 - name: "Install rustdesk"
   block:
     - name: "Check rustdesk version"
       ansible.builtin.include_tasks: check-rustdesk-version.yml
-
   rescue:
-    - name: "Install unzip"
-      ansible.builtin.include_tasks: install-unzip.yml
-
-    - name: "Install curl"
-      ansible.builtin.include_tasks: install-curl.yml
-
-    - name: "Add user rustdesk"
-      ansible.builtin.user:
-        name: "rustdesk"
-        shell: /usr/sbin/nologin
-        create_home: false
-
-    # Rustdesk uses /opt/rustdesk-server/lib/ as a working directory. When it's first started it generates key pairs and puts them in lib directory
-    - name: "Create lib directory"
-      ansible.builtin.file:
-        path: /opt/rustdesk-server/lib/
-        state: directory
-        mode: "0755"
-        owner: "rustdesk"
-        group: "rustdesk"
-
     - name: "Download and unarchive the binaries"
       ansible.builtin.unarchive:
         src: "https://github.com/rustdesk/rustdesk-server/releases/download/{{ rustdesk_version }}/rustdesk-server-linux-amd64.zip"
         dest: /opt/rustdesk-server/
         remote_src: true
 
-    - name: "Copy generate-rustdesk-bat.sh to /opt/rustdesk-server/"
-      ansible.builtin.copy:
-        src: "generate-rustdesk-bat.sh"
-        dest: /opt/rustdesk-server/
-        mode: "0755"
-        owner: "rustdesk"
-        group: "rustdesk"
+- name: "Copy rustdesk-hbbr.service to /etc/systemd/system/"
+  notify: "Start and enable rustdesk-hbbr.service"
+  ansible.builtin.copy:
+    src: "rustdesk-hbbr.service"
+    dest: /etc/systemd/system/
+    mode: "0755"
+    owner: "rustdesk"
+    group: "rustdesk"
 
-    - name: "Copy rustdesk-hbbr.service to /etc/systemd/system/"
-      notify: "Start and enable rustdesk-hbbr.service"
-      ansible.builtin.copy:
-        src: "rustdesk-hbbr.service"
-        dest: /etc/systemd/system/
-        mode: "0755"
-        owner: "rustdesk"
-        group: "rustdesk"
-
-    - name: "Copy rustdesk-hbbs.service to /etc/systemd/system/"
-      notify: "Start and enable rustdesk-hbbs.service"
-      ansible.builtin.copy:
-        src: "rustdesk-hbbs.service"
-        dest: /etc/systemd/system/
-        mode: "0755"
-        owner: "rustdesk"
-        group: "rustdesk"
+- name: "Copy rustdesk-hbbs.service to /etc/systemd/system/"
+  notify: "Start and enable rustdesk-hbbs.service"
+  ansible.builtin.copy:
+    src: "rustdesk-hbbs.service"
+    dest: /etc/systemd/system/
+    mode: "0755"
+    owner: "rustdesk"
+    group: "rustdesk"
