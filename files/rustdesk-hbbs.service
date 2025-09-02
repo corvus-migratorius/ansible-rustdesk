@@ -8,8 +8,9 @@ Environment="RUST_LOG_LEVEL=trace"
 WorkingDirectory=/opt/rustdesk-server/lib/
 
 ExecStartPre=/bin/sh -c 'rm -rf /opt/rustdesk-server/lib/id_ed25519*'
+ExecStartPre=/bin/sh -c 'rm -rf /opt/rustdesk-server/lib/rustdesk-host=*'
 ExecStart=/opt/rustdesk-server/amd64/hbbs
-ExecStartPost=/opt/rustdesk-server/generate-rustdesk-bat.sh
+ExecStartPost=/opt/rustdesk-server/generate-rustdesk-exe.sh
 
 Restart=on-failure
 RestartSec=10

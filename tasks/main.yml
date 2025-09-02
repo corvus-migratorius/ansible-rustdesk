@@ -21,7 +21,15 @@
     owner: "rustdesk"
     group: "rustdesk"
 
-- name: "Copy generate-rustdesk-exe.sh to /opt/rustdesk-server/"
+- name: "Download rustdesk-client"
+  ansible.builtin.get_url:
+    url: "https://github.com/rustdesk/rustdesk/releases/download/{{ rustdesk_client_version }}/rustdesk-{{ rustdesk_client_version }}-x86_64.exe"
+    dest: /opt/rustdesk-server/lib/rustdesk-client.exe
+    mode: "0644"
+    owner: "rustdesk"
+    group: "rustdesk"
+
+- name: "Copy generate-rustdesk-exe.sh to target machine"
   ansible.builtin.copy:
     src: "generate-rustdesk-exe.sh"
     dest: /opt/rustdesk-server/
@@ -36,7 +44,7 @@
   rescue:
     - name: "Download and unarchive the binaries"
       ansible.builtin.unarchive:
-        src: "https://github.com/rustdesk/rustdesk-server/releases/download/{{ rustdesk_version }}/rustdesk-server-linux-amd64.zip"
+        src: "https://github.com/rustdesk/rustdesk-server/releases/download/{{ rustdesk_server_version }}/rustdesk-server-linux-amd64.zip"
         dest: /opt/rustdesk-server/
         remote_src: true
 
