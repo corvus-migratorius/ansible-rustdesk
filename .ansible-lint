@@ -14,4 +14,4 @@ warn_list:
 
 exclude_paths:
   - .github/
-  - molecule/default/client-binary-existance.yml
+  - molecule/default/client-binary-existance.yml # ansible-lint thinks it's a playbook so gives an error, but it's tasks for include_task. decided to exclude it
