@@ -1,6 +1,8 @@
 ---
 - name: "Get public IP"
-  ansible.builtin.command: "curl -s ifconfig.me"
+  ansible.builtin.uri:
+    url: https://ifconfig.me
+    return_content: true
   register: public_ip
   changed_when: false
 
@@ -9,13 +11,13 @@
   register: public_key
   changed_when: false
 
-- name: "Check client rustdesk binary existance"
+- name: "Check client rustdesk binary existence"
   ansible.builtin.stat:
-    path: "/opt/rustdesk-server/lib/rustdesk-host={{ public_ip.stdout }},key={{ public_key.stdout }}.exe"
+    path: "/opt/rustdesk-server/lib/rustdesk-host={{ public_ip.content }},key={{ public_key.stdout }}.exe"
   register: rustdesk_bin
 
 - name: "Check if binary exists"
   ansible.builtin.assert:
-    that: rustdesk_bin.stat.exists
+    that: "rustdesk_bin.stat.exists"
     success_msg: "Rustdesk binary exists and named correctly"
     fail_msg: "Rustdesk binary not found"
