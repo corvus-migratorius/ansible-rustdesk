@@ -1,5 +1,5 @@
 ---
-name: ansible-role-template
+name: ansible-rustdesk
 channels:
   - conda-forge
 dependencies:
