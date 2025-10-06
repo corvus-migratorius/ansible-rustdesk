@@ -8,7 +8,7 @@
 
 - name: "Check if the version of hbbr is the expected one"
   ansible.builtin.assert:
-    that: "hbbr_output.stdout == 'hbbr {{ rustdesk_version }}'"
+    that: "hbbr_output.stdout == 'hbbr {{ rustdesk_server_version }}'"
     success_msg: "hbbr is installed and is the correct version"
     fail_msg: "hbbr is either not installed or does not match the target version"
 
@@ -20,6 +20,6 @@
 
 - name: "Check if the version of hbbs is the expected one"
   ansible.builtin.assert:
-    that: "hbbs_output.stdout == 'hbbs {{ rustdesk_version }}'"
+    that: "hbbs_output.stdout == 'hbbs {{ rustdesk_server_version }}'"
     success_msg: "hbbs is installed and is the correct version"
     fail_msg: "hbbs is either not installed or does not match the target version"

@@ -15,7 +15,7 @@ udp 21116
 Role Variables
 --------------
 
-``` rustdesk_server_version ``` — contains rustdesk-server version to be installed
+``` rustdesk_server_version ``` — contains rustdesk-server version to be installed  
 ``` rustdesk_client_version ``` — contains rustdesk-client version for executable to be configured
 
 Dependencies
